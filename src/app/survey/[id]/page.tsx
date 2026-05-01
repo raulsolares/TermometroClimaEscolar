@@ -56,15 +56,15 @@ export default function SurveyPage() {
     }
   }, [id, router]);
 
-  const saveSurvey = async () => {
+  const saveSurvey = async (currentAnswers = answers) => {
     setSaving(true);
     const { error } = await supabase.from('responses').insert({
       child_id: id as string,
-      mood: answers.mood,
-      played: answers.played,
-      bullied: answers.bullied,
-      event_type: answers.event_type || null,
-      notes: answers.notes || null,
+      mood: currentAnswers.mood,
+      played: currentAnswers.played ?? false,
+      bullied: currentAnswers.bullied ?? false,
+      event_type: currentAnswers.event_type || null,
+      notes: currentAnswers.notes || null,
       date: new Date().toISOString().split('T')[0]
     });
 
@@ -81,11 +81,11 @@ export default function SurveyPage() {
 
   if (loading) return null;
 
-  const nextStep = () => {
-    if (step === 3 && !answers.bullied) {
-      saveSurvey();
+  const nextStep = (updatedAnswers = answers) => {
+    if (step === 3 && !updatedAnswers.bullied) {
+      saveSurvey(updatedAnswers);
     } else if (step === 4) {
-      saveSurvey();
+      saveSurvey(updatedAnswers);
     } else {
       setStep(step + 1);
     }
@@ -124,17 +124,29 @@ export default function SurveyPage() {
             <EmojiButton 
               emoji="🙂" label="Muy bien" 
               active={answers.mood === 3}
-              onClick={() => { setAnswers({...answers, mood: 3}); nextStep(); }} 
+              onClick={() => { 
+                const upd = {...answers, mood: 3 as const};
+                setAnswers(upd); 
+                nextStep(upd); 
+              }} 
             />
             <EmojiButton 
               emoji="😐" label="Normal" 
               active={answers.mood === 2}
-              onClick={() => { setAnswers({...answers, mood: 2}); nextStep(); }} 
+              onClick={() => { 
+                const upd = {...answers, mood: 2 as const};
+                setAnswers(upd); 
+                nextStep(upd); 
+              }} 
             />
             <EmojiButton 
               emoji="🙁" label="Mal" 
               active={answers.mood === 1}
-              onClick={() => { setAnswers({...answers, mood: 1}); nextStep(); }} 
+              onClick={() => { 
+                const upd = {...answers, mood: 1 as const};
+                setAnswers(upd); 
+                nextStep(upd); 
+              }} 
             />
           </div>
         )}
@@ -144,12 +156,20 @@ export default function SurveyPage() {
             <OptionButton 
               label="Sí, jugó con amigos" 
               active={answers.played === true}
-              onClick={() => { setAnswers({...answers, played: true}); nextStep(); }} 
+              onClick={() => { 
+                const upd = {...answers, played: true};
+                setAnswers(upd); 
+                nextStep(upd); 
+              }} 
             />
             <OptionButton 
               label="No, estuvo solo/a" 
               active={answers.played === false}
-              onClick={() => { setAnswers({...answers, played: false}); nextStep(); }} 
+              onClick={() => { 
+                const upd = {...answers, played: false};
+                setAnswers(upd); 
+                nextStep(upd); 
+              }} 
             />
           </div>
         )}
@@ -159,13 +179,21 @@ export default function SurveyPage() {
             <OptionButton 
               label="No, todo bien" 
               active={answers.bullied === false}
-              onClick={() => { setAnswers({...answers, bullied: false}); nextStep(); }} 
+              onClick={() => { 
+                const upd = {...answers, bullied: false};
+                setAnswers(upd); 
+                nextStep(upd); 
+              }} 
             />
             <OptionButton 
               label="Sí, hubo un problema" 
               variant="danger"
               active={answers.bullied === true}
-              onClick={() => { setAnswers({...answers, bullied: true}); nextStep(); }} 
+              onClick={() => { 
+                const upd = {...answers, bullied: true};
+                setAnswers(upd); 
+                nextStep(upd); 
+              }} 
             />
           </div>
         )}
