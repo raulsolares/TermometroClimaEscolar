@@ -221,7 +221,7 @@ export default function SurveyPage() {
               className="w-full p-4 bg-slate-50 border-2 border-transparent focus:border-blue-500 focus:bg-white rounded-2xl outline-none min-h-[100px]"
             />
             <button
-              onClick={saveSurvey}
+              onClick={() => saveSurvey()}
               disabled={saving || !answers.event_type}
               className="w-full bg-blue-600 text-white font-bold py-4 rounded-2xl text-xl shadow-lg active:scale-95 transition-transform disabled:opacity-50"
             >
